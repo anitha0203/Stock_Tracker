@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { CompanyName } from '@app/company-name';
 import { DataService } from '@app/data.service';
@@ -9,7 +9,7 @@ import { Quotes } from '../quotes';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnChanges {
 
 
   private static readonly LocalStock: string = 'STOCKS';
@@ -20,10 +20,12 @@ export class HomeComponent implements OnInit {
   public symbol=[]
   constructor(private userService: UserService, private dataService: DataService){}
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.addStock()
+  }
   public ngOnInit(): void {
       this.stock = new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Z]{1,5}$/)] });
       this.stocks = this.userService.getStocks();
-    //  console.log(this.stocks)
       for(var i=0;i<this.stocks.length;i++)
       {
         this.getStockData(this.stocks[i],i)
@@ -36,7 +38,6 @@ export class HomeComponent implements OnInit {
       let data = JSON.parse(data1)
       this.stockSymbol.push(data);
       this.symbol.push(this.stockSymbol[i].result[0].description)
-     // console.log(this.symbol)
     })
 
     this.dataService.getData(ele).subscribe((response) => {
@@ -55,7 +56,6 @@ export class HomeComponent implements OnInit {
       if (this.stock.valid) {
           this.userService.addStocks(this.stock.value)
           this.getStockData(this.stock.value,1)
-          window.location.reload();
           this.stock.reset('');
       }
   }
