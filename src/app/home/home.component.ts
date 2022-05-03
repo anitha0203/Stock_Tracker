@@ -21,7 +21,6 @@ export class HomeComponent implements OnInit, OnChanges {
   constructor(private userService: UserService, private dataService: DataService){}
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.addStock()
   }
   public ngOnInit(): void {
       this.stock = new FormControl('', { validators: [Validators.required, Validators.pattern(/^[A-Z]{1,5}$/)] });
